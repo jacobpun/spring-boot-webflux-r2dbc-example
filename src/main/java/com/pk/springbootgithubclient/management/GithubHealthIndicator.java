@@ -2,7 +2,7 @@ package com.pk.springbootgithubclient.management;
 
 import java.time.Duration;
 
-import com.pk.springbootgithubclient.service.GithibClient;
+import com.pk.springbootgithubclient.service.GithubClient;
 
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 @Component
 @AllArgsConstructor
 public class GithubHealthIndicator implements HealthIndicator {
-    private final GithibClient gitClient;
+    private final GithubClient gitClient;
 
     @Override
     public Health health() {

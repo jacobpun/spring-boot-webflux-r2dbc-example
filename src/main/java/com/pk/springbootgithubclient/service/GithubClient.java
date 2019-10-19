@@ -8,24 +8,24 @@ import com.pk.springbootgithubclient.model.RepositoryEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunctions;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import reactor.core.publisher.Mono;
 
+import static org.springframework.web.reactive.function.client.ExchangeFilterFunctions.basicAuthentication;
+
 @Component
-public class GithibClient {
+public class GithubClient {
     private final String eventsUrl;
     private final WebClient webClient;
-    private AtomicInteger guage;
 
-    public GithibClient(GithubProperties gp, MeterRegistry registry) {
-        this.guage = registry.gauge("github.requests.remaining", new AtomicInteger(0));
+    public GithubClient(GithubProperties gp, MeterRegistry registry) {
+        var guage = registry.gauge("github.requests.remaining", new AtomicInteger(0));
         this.eventsUrl = gp.getEventsUrl();
         this.webClient = WebClient.builder()
-                .filter(ExchangeFilterFunctions.basicAuthentication(gp.getUsername(), gp.getPassword()))
-                .filter(rateLimitFilter())
+                .filter(basicAuthentication(gp.getUsername(), gp.getPassword()))
+                .filter(rateLimitFilter(guage))
                 .build();
     }
 
@@ -33,12 +33,12 @@ public class GithibClient {
         return this.webClient.get().uri(eventsUrl, owner, repo).retrieve().bodyToMono(RepositoryEvent[].class);
     }
 
-    private ExchangeFilterFunction rateLimitFilter() {
-        return (req, next) -> next.exchange(req).doOnNext(this::setRateLimit);
+    private ExchangeFilterFunction rateLimitFilter(AtomicInteger guage) {
+        return (req, next) -> next.exchange(req).doOnNext(rsp -> setRateLimit(rsp, guage));
     }
 
-    private void setRateLimit(ClientResponse resp) {
+    private void setRateLimit(ClientResponse resp, AtomicInteger guage) {
         var remaining = resp.headers().asHttpHeaders().getFirst("X-RateLimit-Remaining");
-        this.guage.set(Integer.parseInt(remaining));
+        guage.set(Integer.parseInt(remaining));
     }
 }

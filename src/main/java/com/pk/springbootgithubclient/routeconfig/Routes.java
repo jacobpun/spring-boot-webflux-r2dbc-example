@@ -2,7 +2,7 @@ package com.pk.springbootgithubclient.routeconfig;
 
 import com.pk.springbootgithubclient.model.RepositoryEvent;
 import com.pk.springbootgithubclient.repository.GithubProjectRepository;
-import com.pk.springbootgithubclient.service.GithibClient;
+import com.pk.springbootgithubclient.service.GithubClient;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +24,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.*
 @RequiredArgsConstructor
 public class Routes {
     private final GithubProjectRepository repo;
-    private final GithibClient client;
+    private final GithubClient client;
 
     @Bean
     public RouterFunction<ServerResponse> routeConfig() {
