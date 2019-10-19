@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 @ConfigurationProperties("github")
 @Validated
 public class GithubProperties {
+    @NotNull
+    private String eventsUrl;
     @Email
     private String username;
     @NotNull

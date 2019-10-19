@@ -12,4 +12,8 @@ import reactor.core.publisher.Mono;
 public interface GithubProjectRepository extends ReactiveCrudRepository<GithubProject, Long>{
     @Query("SELECT ID, ORG_NAME, REPO_NAME FROM GITHUB_PROJECT WHERE REPO_NAME = $1")
     Mono<GithubProject> findByRepoName(String repoName);
+
+    /** Helper method that checks if Database connection is UP */
+    @Query("Select count(*) from GITHUB_PROJECT")
+    Mono<Integer> isDbUp();
 }
