@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 
-@SpringBootApplication
+@SpringBootApplication //(exclude= {ReactiveUserDetailsServiceAutoConfiguration.class})
 @EnableR2dbcRepositories
 @EnableConfigurationProperties(GithubProperties.class)
 public class DemoApplication {
