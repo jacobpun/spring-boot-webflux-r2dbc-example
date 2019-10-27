@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @ConfigurationProperties("github")
 @Validated
-public class GithubProperties {
+public class GithubApiProperties {
     @NotNull
     private String eventsUrl;
     @Email

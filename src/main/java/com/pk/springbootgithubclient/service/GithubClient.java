@@ -1,8 +1,10 @@
 package com.pk.springbootgithubclient.service;
 
+import static org.springframework.web.reactive.function.client.ExchangeFilterFunctions.basicAuthentication;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.pk.springbootgithubclient.config.GithubProperties;
+import com.pk.springbootgithubclient.config.GithubApiProperties;
 import com.pk.springbootgithubclient.model.RepositoryEvent;
 
 import org.springframework.stereotype.Component;
@@ -13,14 +15,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 import io.micrometer.core.instrument.MeterRegistry;
 import reactor.core.publisher.Mono;
 
-import static org.springframework.web.reactive.function.client.ExchangeFilterFunctions.basicAuthentication;
-
 @Component
 public class GithubClient {
     private final String eventsUrl;
     private final WebClient webClient;
 
-    public GithubClient(GithubProperties gp, MeterRegistry registry) {
+    public GithubClient(GithubApiProperties gp, MeterRegistry registry) {
         var guage = registry.gauge("github.requests.remaining", new AtomicInteger(0));
         this.eventsUrl = gp.getEventsUrl();
         this.webClient = WebClient.builder()
